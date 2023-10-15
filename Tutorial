@@ -1,0 +1,45 @@
+1) overview
+
+   *) Jenkins is a powerful application that allows continuous integration and continuous delivery 
+      of projects, regardless of the platform you are working on. It is a free source that can
+      handle any kind of build or continuous integration. You can integrate Jenkins with a number
+      of testing and deployment technologies. In this tutorial, we would explain how you can 
+      use Jenkins to build and test your software projects continuously.
+
+2) Why Jenkins?
+
+  *) Jenkins is a software that allows continuous integration. Jenkins will be installed on
+     a server where the central build will take place. 
+
+3) Why Jenkins
+
+ *) Along with Jenkins, sometimes, one might also see the association of Hudson. Hudson
+    is a very popular open-source Java-based continuous integration tool developed by
+    Sun Microsystems which was later acquired by Oracle. After the acquisition of 
+    Sun by Oracle, a fork was created from the Hudson source code, which brought
+   about the introduction of Jenkins.
+
+4) What is Continuous Integration?
+
+   *) Continuous Integration is a development practice that requires developers to 
+      integrate code into a shared repository at regular intervals. This concept was 
+      meant to remove the problem of finding later occurrence of issues in the build
+      lifecycle. Continuous integration requires the developers to have frequent 
+      builds. The common practice is that whenever a code commit occurs, 
+      a build should be triggered.
+
+5) System Requirements
+
+   *) JDK:- 	JDK 1.5 or above
+   *) Memory:-	2 GB RAM (recommended)
+   *) Disk Space:- 	No minimum requirement. Note that since all builds will be stored
+      on the Jenkins machines, it has to be ensured that sufficient disk space is 
+      available for build storage.
+   *)  Operating System Version:- Jenkins can be installed on Windows, 
+       Ubuntu/Debian, Red Hat/Fedora/CentOS, Mac OS X, openSUSE, 
+       FReeBSD, OpenBSD, Gentoo.
+   *) Java Container:-	The WAR file can be run in any container that 
+      supports Servlet 2.4/JSP 2.0 or later.(An example is Tomcat 5).
+
+
+
