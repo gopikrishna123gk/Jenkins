@@ -112,7 +112,180 @@
       credentials you set up for the image in the field that appears below.
   12. Select Non verifying Verification Strategy in the Host Key Verification Strategy section.
   13. Click Save when you finish configuring the host.
-  
+
+
+*) Integrate Kubernetes with Jenkins
+
+  *) Create a namespace that allows you to segregate Jenkins objects within the Kubernetes cluster.
+  *) Create a PersistentVolume to store your Jenkins data. This will preserve data across restarts.
+    1) Create a file called jenkins-namespace.yaml with the following content:
+             apiVersion: v1
+             kind: Namespace
+             metadata:
+             name: jenkins
+    2) Apply the spec by entering:
+      $ kubectl apply -f jenkins-namespace.yaml
+    3)following snippet into a file called jenkins-volume.yaml:
+          apiVersion: v1
+          kind: PersistentVolume
+          metadata:
+          name: jenkins-pv
+          namespace: jenkins
+          spec:
+         storageClassName: jenkins-pv
+         accessModes:
+        - ReadWriteOnce
+          capacity:
+         storage: 10Gi
+         persistentVolumeReclaimPolicy: Retain
+          hostPath:
+         path: /data/jenkins-volume/
+  4) Run the following command to apply the spec:
+      $ kubectl apply -f jenkins.volume.yaml
+
+*) Install Jenkins
+
+   1) To enable persistence, you will create an override file and pass it as an argument
+      to the Helm CLI. Paste the content from https://raw.githubusercontent.com/kubernetes/
+      charts/master/stable/jenkins/values.yaml into a file called values.yaml. 
+     Then, open the values.yaml file in your favourite text editor and modify the following line
+       storageClass:
+         to:
+      storageClass: jenkins-pv
+ 2) Now you can install Jenkins by running the helm install command
+    $ helm install jenkins -f values.yaml stable/jenkins --namespace jenkins
+ 3) Depending on your environment, it can take a bit of time for Jenkins to start up.
+   Enter the following command to inspect the status of your Pod
+    $ kubectl get pods --namespace=jenkins
+    Once Jenkins is installed, the status should be  set to Running as in the following output:
+      $kubectl get pods --namespace=jenkins
+      NAME                       READY   STATUS    RESTARTS   AGE
+      jenkins-645fbf58d6-6xfvj   1/1     Running   0          2m
+4) To access your Jenkins server, you must retrieve the password by entering the following command:
+   printf $(kubectl get secret --namespace jenkins jenkins -o jsonpath="{.data.jenkins-admin-password}" 
+    | base64 --decode);echo
+5) Get the name of the Pod running that is running Jenkins using the following command 
+   export POD_NAME=$(kubectl get pods --namespace jenkins -l "app.kubernetes.io/component=jenkins-master"
+    -l "app.kubernetes.io/instance=jenkins" -o jsonpath="{.items[0].metadata.name}")
+6) Use the kubectl command to set up port forwarding:
+   $ kubectl --namespace jenkins port-forward $POD_NAME 8080:8080
+
+
+*) Installing Plugin for Kubernetes
+
+ 1) Click on "Manage Jenkins" in the left-hand side
+ 2) Click on "Manage Plugins."
+ 3) In the "Available" tab, search for "Kubernetes."
+ 4) Check the box next to the "Kubernetes" plugin.
+ 5) Click on the "Install without restart" button.
+ 6) After the installation, you will be redirected to the main Jenkins dashboard.
+ 7) To configure the Kubernetes plugin, click on "Manage Jenkins" and then "Configure System."
+ 8) Scroll down to the "Cloud" section and click the "Add a new cloud" button.
+ 9) Select "Kubernetes" from the dropdown list.
+
+
+*) Integrating Terraform with Jenkins
+
+  1) Click on "Manage Jenkins" in the left-hand sidebar.
+  2) Click on "Manage Plugins."
+  3) In the "Available" tab, search for "Terraform."
+  4) Check the box next to the "Terraform" plugin.
+  5) Click on the "Install without restart" button
+
+*) Configure the Terraform Plugin
+
+ 1) After the installation, you will be redirected to the main Jenkins dashboard.
+ 2) To configure the Terraform plugin, click on "Manage Jenkins" and then "Configure System."
+ 3) Scroll down to the "Terraform" section
+ 4) In the "Terraform Executable" section, provide the path to the Terraform executable on your
+   Jenkins server. Ensure that Terraform is installed and available on the Jenkins server or on
+   the nodes where your Jenkins agents run.
+ 5) Once you've filled in the necessary information, click the "Save" button to save your configuration.
+
+
+*) Integrating SonarQube With Jenkins
+
+  1) Click on "Manage Jenkins" in the left-hand side
+  2) Click on "Manage Plugins."
+  3) In the "Available" tab, search for "SonarQube Scanner."
+  4) Check the box next to the "SonarQube Scanner" plugin.
+  5) Click on the "Install without restart" button.
+
+
+*) Configure SonarQube Server in Jenkins
+
+ 1) After installing the SonarQube Scanner plugin, return to the Jenkins dashboard.
+ 2) Click on "Manage Jenkins" and then "Configure System."
+ 3) Scroll down to the "SonarQube Servers" section.
+ 4) Click the "Add SonarQube" button to add your SonarQube server details.
+ 5) Provide a name for your SonarQube server configuration, the server URL, and the
+    authentication token. You can generate an authentication token in your SonarQube 
+    instance by following the official documentation.
+ 6) Click "Save" to save your SonarQube server configuration.
+
+
+*) Integrating AWS with Jenkins
+
+ 1) AWS Credentials Plugin
+ 2) AWS Steps Plugin (formerly known as the EC2 Plugin)
+ 3) Pipeline plugin
+
+
+*) Configure AWS Credentials in Jenkins
+
+ 1) In the Jenkins dashboard, click on "Manage Jenkins" in the left-hand side
+ 2) Click on "Manage Credentials."
+ 3) Under the "System" section, click on "Global credentials (unrestricted)."
+ 4) Click on "Add Credentials."
+ 5) Select "AWS Credentials" as the kind of credentials.
+ 6) Provide your AWS Access Key ID and Secret Access Key. You can also use
+   an IAM user with appropriate permissions. 
+   like:- which type of Resource you want to implement
+ 7) Optionally, you can specify a description for the credentials.
+ 8) Click "OK" to save your AWS credentials.
+
+
+*)  Integrating the Grafana with Jenkins
+
+
+ 1)  In the Jenkins dashboard, click on "Manage Jenkins" in the left-hand side.
+ 2) Click on "Manage Plugins."
+ 3) In the "Available" tab, search for the "Grafana" plugin.
+ 4) Check the box next to the "Grafana" plugin and click "Install without restart."
+
+
+*) Configure the Grafana Integration in Jenkins
+
+
+ 1)  After installing the Grafana plugin, return to the Jenkins dashboard.
+ 2) Click on "Manage Jenkins" and then "Configure System."
+ 3) Scroll down to the "Grafana" section.
+ 4) In the "Grafana Server URL" field, enter the URL of your Grafana server,
+   e.g., http://grafana.example.com.
+ 5) If your Grafana server requires authentication, you can provide the
+    username and password in the respective fields.
+ 6) Click "Save" to save your Grafana configuration in Jenkins.
+
+*) Create a Grafana Dashboard
+
+ 1) Log in to your Grafana instance.
+ 2) Create a new dashboard or edit an existing one.
+ 3) Add a new panel to the dashboard.
+ 4) Configure the panel to display the data you want, such as Jenkins build metrics,
+   job execution times, or other relevant information. You can use data sources like 
+   Prometheus, InfluxDB, or other time-series databases to collect Jenkins metrics.
+ 5) Save the dashboard with a name that reflects its purpose, and ensure it's set as
+    the home dashboard if you want it to be the default view when you log in.
+ 
+
+
+
+
+
+
+
+
+ 
 
   
   
