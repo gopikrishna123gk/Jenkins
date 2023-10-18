@@ -1,0 +1,122 @@
+*) Configuring GitHub for Jenkins Continuous Integration
+
+ 1)  Go to your Github profile and navigate to Settings
+ 2) In the settings screen, click on the “Developer settings” menu 
+    and click on “Personal access tokens.”
+ 3)  In the “Personal access tokens” tab, click on the “Generate new token”
+     button and provide necessary details as desired (an example is provided
+     in the below figure), and click on the “Generate token” button.
+ 4) Post successful creation of the token, the newly generated secret text in
+    GitHub is to be copied for future usage in Jenkins.
+
+*) Configuring Jenkins for GitHub Integration
+
+  1) Click on “Manage Jenkins.”
+  2) Click on “Configure System” and go to the following ‘GitHub‘ section  
+  Note: If the above “GitHub Server” section is found missing in Jenkins, make 
+        sure to manually install the missing GitHub plugin from the installed list 
+         of tools shown below.
+  3) Steps to follow- Go to: Jenkins Dashboard -> Manage Jenkins -> Manage Plugins -> 
+   ‘Available’ tab -> Enter Git in search bar and filter -> Install required plugin
+  4) Make sure to add the copied secret key in the above credentials by:
+   Click on the “Add” -> “Jenkins” button in the Github Server section’s Credentials field.
+   Select “Secret text” from the “Kind” dropdown.
+  5) Paste the previously copied secret text from GitHub in the Secret field as displayed below,
+     while providing an ID such as “jenkins-integration,” and then click on the “Add” button.
+  6) Once the Secret text is successfully added, let us test the connection by clicking on the 
+     “Test connection” button and verify the confirmation message 
+
+
+*) configuring Maven Plugin in Jenkins
+
+1) Click on the Manage Jenkins link in the left menu bar
+2)  Under the System Configuration section, click on the Manage Plugins options
+3) Under the Plugin Manager, click on the Available tab  and search for the maven plugin
+   It will show the Maven Integration plugin as a result
+4) Select the checkbox in front of the Maven Integration plugin and click on the
+   Install without restart button
+5) Once the plugin installs successfully, click the checkbox to restart Jenkins
+6) After the restart of Jenkins, the Maven Jenkins plugin will be installed successfully
+   and ready for configuration
+
+*) integrate Maven with Jenkins
+
+  *) setup Java Path in Jenkins
+    1)  Open the Jenkins and go to Jenkins Dashboard. After that, click on the
+        Manage Jenkins 
+    2) Now click on the Global Tool Configuration
+    3) After that, we need to set the JDK path in Jenkins. To set the JDK path in Jenkins
+      *) Click on the Add JDK  button. Kindly note that by default, "Install Automatically"
+         will be checked, so since we are going to use the JDK installed in our local machine,
+        "Install automatically" will install the latest version of JDK, and you will also need 
+         to provide credentials to download relevant JDK.
+      *) Give JDK's name as we gave as JDK 1.8, as this is currently installed in my machine.
+      *) Give the path of JDK in JAVA_HOME textbox
+
+*) setup Maven Path in Jenkins
+
+  1) Click on the Add Maven button. Kindly note that by default, "Install Automatically" will be checked,
+     so we will uncheck it because we don't want that Jenkins will automatically install the latest
+      version of Maven.
+  2) Give the name of Maven as we gave as Maven 3.6, as this is the version set up in my machine.
+  3) Give the path of Maven in the MAVEN_HOME textbox.
+  4) Click on the Save button.
+
+
+*) integrate Ansible with Jenkins
+
+  1) Go to Manage Jenkins 
+  2) Manage Plugins >Available > search Ansible.
+   *)  If you are already installed Ansible Plugin on your Jenkins It will display in the Installed section.
+   *) Now we can see the Invoke Ansible Playbook option in the Build Environment section but we need to
+      configure Ansible path for Jenkins.
+
+*) setup Ansible in Jenkins
+
+  1) Go to Manage Jenkins > Global Tool Configuration >
+     It will display Ansible on the list.
+  2) Goto Jenkins Home > New Item > Create New Freestyle Project.
+  3) We create a new freestyle project now lets configure our project.
+     Goto source code management section and add your code repository
+     here you are free to use any of the source code management platforms
+  4) Goto Build section and select Invoke Ansible Playbook. Once you select
+     that option it will display ansible-playbook configuration 
+
+*) Integrate Docker with Jenkins
+
+  1)  Select Manage Jenkins in the menu on the left side of the Jenkins dashboard.
+  2)  Click Manage Plugins in the Manage Jenkins window
+  3)  Select the Available tab in the Plugin Manager window.
+  4) Type Docker in the search field, and select the box next to the Docker plugin
+     that appears in the search results.
+  5) Click the Download now and install after restart button.
+  6)  When all the necessary plugin components download, select the box at the bottom 
+     of the screen to restart Jenkins.
+
+  *) Setup Docker Build Agent in Jenkins
+
+   1. Select the Manage Nodes and Clouds item in the System Configuration section.
+   2. Click Configure Clouds in the menu on the left side
+   3. Expand the Add a new cloud list and select Docker.
+   4. Provide the name and URI for the Docker host in the relevant fields. Enable 
+      the host by selecting the box.
+   5. Select the Expose DOCKER_HOST box.
+   6. Click the Docker Agent templates button to open additional configuration options.
+   7. Provide the label for identifying the host, and enable the agent by selecting the 
+      Enabled option.
+   8. Name the Docker template and provide the path to the Docker image.
+   9. Specify the home folder for the Jenkins user you created.
+  10. Choose Connect with SSH from the list in the Connect method section.
+      Additional SSH configuration options appear.
+  11. Select Use configured SSH credentials in the SSH key section. Provide the
+      credentials you set up for the image in the field that appears below.
+  12. Select Non verifying Verification Strategy in the Host Key Verification Strategy section.
+  13. Click Save when you finish configuring the host.
+  
+
+  
+  
+
+
+
+  
