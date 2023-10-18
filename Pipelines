@@ -1,0 +1,432 @@
+*) Pipeline for integrating Jenkins with Git
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from the Git repository
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Replace this with your build commands
+                sh 'make build'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Replace this with your test commands
+                sh 'make test'
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                branch 'master'
+            }
+            steps {
+                // Replace this with your deployment commands
+                sh 'make deploy'
+            }
+        }
+    }
+}
+You can customize the stages and steps to match your specific build, test, and deployment requirements.
+
+*) Run Your Jenkins Pipeline
+
+  1) Once you have set up your Jenkins job and added a Jenkinsfile to your Git repository, 
+     you can trigger the pipeline job. Jenkins will automatically build, test, and deploy 
+     your code based on the instructions in the Jenkinsfile.
+  2) The Jenkins pipeline will continuously monitor your Git repository, and whenever changes
+     are detected, it will automatically trigger a new build and deployment process, ensuring 
+     that your code is built and deployed consistently.
+  3) This is a basic example of a Jenkins pipeline for integrating Jenkins with Git. You can
+     expand and customize the pipeline to suit your specific project requirements, such as
+     integrating additional tools, performing security checks, and more.
+
+
+
+*) Pipeline for integrating maven with jenkins
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    // Set up Maven
+                    def mvnHome = tool name: 'Maven', type: 
+                    'hudson.tasks.Maven$MavenInstallation'
+                    def mvnCMD = "${mvnHome}/bin/mvn"
+
+                    // Build the project using Maven
+                    sh "${mvnCMD} clean install"
+                }
+            }
+        }
+    }
+}
+
+*) In this Jenkinsfile:
+  We define a pipeline with two stages:
+    1) Checkout 
+    2) Build.
+ *) In the Build stage, we configure Maven. We assume that a Maven tool named "Maven"
+    is defined in the Jenkins Global Tool Configuration.
+ *) The sh step executes the Maven build by invoking the mvn command.
+
+*)  Run Your Jenkins Pipeline
+
+    *) After creating the Jenkinsfile and configuring the Jenkins job, every time you push
+      changes to your Git repository, Jenkins will automatically detect the changes, trigger 
+      the pipeline, and execute the defined stages in the Jenkinsfile.
+    *) This pipeline sets up a basic continuous integration (CI) workflow for building 
+       Java applications with Maven in Jenkins. You can expand and customize the pipeline to 
+       include additional stages, testing, deployment steps, and more complex build scenarios based
+       on your project's requirements.
+
+
+
+
+*) Pipeline for integrating ansible with jenkins
+
+
+    pipeline {
+    agent any
+
+    environment {
+        ANSIBLE_HOSTS = 'inventory.ini' // Path to your Ansible inventory file
+                         for ex:- ansible/etc/inventory.ini
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Provision Infrastructure') {
+            steps {
+                script {
+                    sh "ansible-playbook -i ${ANSIBLE_HOSTS} ansible/provision.yml"
+                }
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                script {
+                    sh "ansible-playbook -i ${ANSIBLE_HOSTS} ansible/deploy.yml"
+                }
+            }
+        }
+    }
+}
+
+  *) In this Jenkinsfile:
+
+      *) We define a pipeline with three stages: Checkout, Provision Infrastructure,
+        and Deploy Application.
+      *) In the environment section, we set the ANSIBLE_HOSTS environment variable to 
+          specify the path to your Ansible inventory file (e.g., inventory.ini).
+      *) In the Provision Infrastructure and Deploy Application stages, we use the 
+         ansible-playbook command to execute Ansible playbooks (provision.yml and deploy.yml)
+         that provision infrastructure and deploy the application.
+
+*) Run Your Jenkins Pipeline
+
+    *) After creating the Jenkinsfile and configuring the Jenkins job, every time you push changes
+       to your Git repository, Jenkins will automatically detect the changes, trigger the pipeline, 
+       and execute the defined stages in the Jenkinsfile.
+   *) This pipeline integrates Ansible with Jenkins, allowing you to automate infrastructure provisioning
+      and application deployment tasks. You can expand and customize the pipeline to include additional stages,
+      testing, and other automation steps based on your project's requirements.
+
+
+
+*) Pipeline for integrating Docker with jenkins
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build a Docker image
+                    sh 'docker build -t my-app:latest .'
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Push the Docker image to a registry (e.g., Docker Hub)
+                    sh 'docker push my-app:latest'
+                }
+            }
+        }
+
+        stage('Deploy Docker Container') {
+            steps {
+                script {
+                    // Deploy the Docker container to a target environment 
+                      (e.g., Docker swarm or Kubernetes)
+                    sh 'docker run -d --name my-container -p 8080:80 my-app:latest'
+                }
+            }
+        }
+    }
+}
+
+*) In this Jenkinsfile:
+
+   *) We define a pipeline with four stages: Checkout, Build Docker Image,
+      Push Docker Image, and Deploy Docker Container.
+   *) In the Build Docker Image stage, we use the docker build command to build
+      a Docker image from the project files.
+   *) In the Push Docker Image stage, we use the docker push command to push the
+      Docker image to a container registry (e.g., Docker Hub).
+   *) In the Deploy Docker Container stage, we use the docker run command to deploy 
+      the Docker container in the target environment.
+
+*) Run Your Jenkins Pipeline
+
+   *)  After creating the Jenkinsfile and configuring the Jenkins job, every time you push
+       changes to your Git repository, Jenkins will automatically detect the changes, trigger
+       the pipeline, and execute the defined stages in the Jenkinsfile.
+   *) This pipeline integrates Docker with Jenkins, allowing you to automate building and 
+      deploying Docker containers as part of your CI/CD process. You can expand and customize
+      the pipeline to include additional stages, testing, and other automation steps based on
+      your project's requirements.
+
+
+*) Pipeline for integrating Kubernetes with Jenkins
+
+
+pipeline {
+    agent any
+
+    environment {
+        KUBECONFIG = '/path/to/kubeconfig.yaml' // Path to your kubeconfig file
+        IMAGE_NAME = 'my-app' // Replace with your image name
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build a Docker image
+                    sh "docker build -t ${env.IMAGE_NAME} ."
+                }
+            }
+        }
+
+        stage('Push Docker Image to Registry') {
+            steps {
+                script {
+                    // Push the Docker image to a container registry (e.g., Docker Hub)
+                    sh "docker push ${env.IMAGE_NAME}:latest"
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Configure kubectl with the kubeconfig
+                    sh "export KUBECONFIG=${env.KUBECONFIG}"
+
+                    // Deploy the application to Kubernetes
+                    sh "kubectl apply -f kubernetes/deployment.yaml"
+                }
+            }
+        }
+    }
+}
+
+
+*) In this Jenkinsfile
+
+   *)  We define a pipeline with four stages: Checkout, Build Docker Image,
+       Push Docker Image to Registry, and Deploy to Kubernetes.
+   *) In the environment section, we set the KUBECONFIG environment variable to
+      specify the path to your Kubernetes configuration file (kubeconfig.yaml) and
+      the IMAGE_NAME variable to specify the Docker image name.
+   *) In the Build Docker Image stage, we use the docker build command to build a 
+      Docker image.
+   *) In the Push Docker Image to Registry stage, we use the docker push command to 
+      push the Docker image to a container registry (e.g., Docker Hub).
+   *) In the Deploy to Kubernetes stage, we use the kubectl command to apply the
+      Kubernetes deployment manifest (deployment.yaml).
+
+*) Run Your Jenkins Pipeline
+
+   *) After creating the Jenkinsfile and configuring the Jenkins job, every time you push changes
+      to your Git repository, Jenkins will automatically detect the changes, trigger the pipeline,
+      and execute the defined stages in the Jenkinsfile.
+   *) This pipeline integrates Kubernetes with Jenkins, allowing you to automate the deployment of
+      containerized applications to a Kubernetes cluster as part of your CI/CD process. You can
+      expand and customize the pipeline to include additional stages, testing, and other automation
+      steps based on your project's requirements.
+
+
+*) Pipeline for integrating Terraform with Jenkins
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Initialize Terraform') {
+            steps {
+                script {
+                    // Initialize Terraform in the workspace
+                    sh 'terraform init'
+                }
+            }
+        }
+
+        stage('Plan Infrastructure') {
+            steps {
+                script {
+                    // Generate an execution plan for Terraform
+                    sh 'terraform plan -out=tfplan'
+                }
+            }
+        }
+
+        stage('Apply Infrastructure') {
+            steps {
+                script {
+                    // Apply the Terraform plan to create or update infrastructure
+                    sh 'terraform apply -auto-approve tfplan'
+                }
+            }
+        }
+
+        stage('Destroy Infrastructure') {
+            when {
+                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+            }
+            steps {
+                script {
+                    // Destroy the infrastructure (use with caution)
+                    sh 'terraform destroy -auto-approve'
+                }
+            }
+        }
+    }
+}
+
+
+*) In this Jenkinsfile
+
+  *) We define a pipeline with five stages:
+       1) Checkout
+       2) Initialize Terraform
+       3) Plan Infrastructure
+       4) Apply Infrastructure
+       5) Destroy Infrastructure.
+ *) In the Initialize Terraform stage, we use the terraform init command to
+    initialize Terraform in the workspace.
+ *) In the Plan Infrastructure stage, we use the terraform plan command to 
+    generate an execution plan for Terraform.
+ *) In the Apply Infrastructure stage, we use the terraform apply command
+    to create or update the infrastructure based on the execution plan.
+ *) In the Destroy Infrastructure stage, we provide an option to destroy
+    the infrastructure if the previous stages were successful.
+   [note]:- Be cautious when using this stage in a production environment.
+
+
+*) Run Your Jenkins Pipeline
+
+   *) After creating the Jenkinsfile and configuring the Jenkins job, every time 
+     you push changes to your Git repository, Jenkins will automatically detect the
+     changes, trigger the pipeline, and execute the defined stages in the Jenkinsfile.
+   *) This pipeline integrates Terraform with Jenkins, allowing you to automate 
+      infrastructure provisioning and management as part of your CI/CD process.
+      You can expand and customize the pipeline to include additional stages, testing,
+      and other automation steps based on your project's requirements.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
