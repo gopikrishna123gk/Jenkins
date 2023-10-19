@@ -146,6 +146,341 @@
      SMTP server: smtp.example.com
      Default User E-mail suffix: gopikrishnakommineni@gmail.com
 
+5) Extended E-mail Notification:
+
+   This section allows for more advanced email notification configurations.
+   Example:
+   Default Recipients: gkkrishnakommineni@gmail.com
+   Default Subject: Jenkins Build Result
+   Default Content Type: HTML
+   Default Reply-To Address: jenkins@prod.com
+
+6) Security Realm:
+
+  This is where you configure authentication methods for Jenkins.
+   Options include Jenkins's own user database, LDAP, and others.
+   Example:
+   Security Realm: Jenkins's own user database
+
+7)  Authorization:
+
+  Configure the authorization strategy for Jenkins. You can use built-in
+  authorization strategies or install and configure plugins like the 
+  "Matrix Authorization Strategy" plugin.
+  Example:
+  Authorization: Matrix-based security (or) rbac
+
+8)  Configure Plugin Settings:
+
+   Depending on the plugins installed, you may have additional configuration
+   options for various plugins. These settings will vary depending on the installed
+   plugins and their functionality.
+
+9) Save Your Configurations:
+
+  After making changes, scroll down to the bottom of the "Configure System" page and 
+  click the "Save" button to save your configurations.
+  Once you've configured these settings, they will apply globally to your Jenkins instance
+  and its projects. Be careful when making changes in the "Configure System" page, as they 
+  can have significant impacts on Jenkins' behavior. Always ensure that your configurations
+  are correct and well-documented.
+
+*) Configure Global Security
+
+   *) Accessing Global Security
+
+    *) Log in to your Jenkins instance as an administrator.
+    *) Click on "Manage Jenkins" on the left-hand side of the Jenkins dashboard.
+    *) Under the "Manage Jenkins" section, select "Configure Global Security."
+
+   *) Configure Global Security Settings
+
+     You'll find a range of settings and options to configure global security on the 
+     "Configure Global Security" page
+
+     1) Security Realm
+
+       Choose an authentication method for your Jenkins instance. Options include Jenkins's
+       own user database, LDAP, and more.
+       Example:-
+       Security Realm: Jenkins's own user database
+
+    2) Authorization
+
+      Define the authorization strategy to control user and group permissions. You can use
+      built-in strategies or install and configure plugins for more advanced control.
+      Example:-
+      Authorization: Matrix-based security
+
+   3) CSRF Protection
+
+     Enable Cross-Site Request Forgery (CSRF) protection to prevent unauthorized access.
+     Example:-
+     Enable CSRF protection
+
+  4) Agent Protocols
+
+    Specify which agent protocols are allowed for communication with Jenkins agents.
+    Example:
+    Allow agent protocols: JNLP, SSH
+
+ 5) Project-based Matrix Authorization Strategy
+
+   Configure finer-grained access control for specific projects based on 
+   user roles and permissions.
+   Example:
+   Enable Project-based Matrix Authorization Strategy
+
+  6)  Build Authorization
+
+    Control who can run and configure builds. You can restrict this to
+    administrators or other roles.
+    Example:
+    Allow administrators and members of the "Developers" role to build jobs
+
+ 7) Role-Based Strategy (with the Role-based Authorization Strategy plugin)
+
+   If you're using the Role-based Authorization Strategy plugin, configure user
+   roles and define the permissions associated with each role.
+   Example:
+   Define a "Developers" role with specific permissions, e.g., read, build, configure.
+
+ 8) Save Your Configurations
+
+   After making the desired security configurations, scroll down to the bottom of the
+   "Configure Global Security" page and click the "Save" button to apply your changes.
+
+ 9) Testing Global Security
+
+   *) It's important to thoroughly test your global security settings to ensure that they work as
+     expected. Log out and log in with different user accounts to verify that users can access only 
+     the resources they are authorized to use.
+   *) Configuring global security is a critical aspect of managing a Jenkins instance, especially 
+      when dealing with sensitive projects and deployments. Always ensure that your security settings
+      align with your organization's security policies and requirements.
+
+
+*) Manage Nodes and Clouds
+
+ 1) Accessing "Manage Nodes and Clouds"
+
+      *) Log in to your Jenkins instance as an administrator.
+      *) Click on "Manage Jenkins" on the left-hand side of the Jenkins dashboard.
+      *) Under the "Manage Jenkins" section, select "Manage Nodes and Clouds."
+
+ 2) Managing Nodes
+
+     Nodes are the worker machines where builds are executed. You can add, configure,
+     and manage them in this section.
+
+     1) Adding a New Node
+
+      *) Click on "New Node."
+      *)  Give the node a name (e.g., "Linux Worker") and choose a node type 
+         (e.g., "Permanent Agent").
+      *)  Configure the node's settings, such as the number of executors, 
+         remote root directory, and labels.
+      *)  Click "Save" to add the new node.
+
+     2) Modifying a Node
+
+      *) Click on the name of an existing node in the list to access
+       its configuration.
+      *)  Make the necessary changes, such as increasing the number of executors.
+      *) Click "Save" to apply the modifications.
+
+     3) Deleting a Node
+
+      *) Click on the name of an existing node.
+      *) In the node's configuration page, scroll down and 
+        click "Delete" to remove the node.
+
+ 3) Managing Clouds
+
+    In Jenkins, you can also configure clouds to dynamically provision build agents on-demand.
+    This is useful for managing agent scaling in cloud environments.
+
+    1) Adding a Cloud Configuration
+
+     *) Click on "New Cloud."
+     *) Choose a cloud type depending on your cloud infrastructure (e.g., Amazon EC2, 
+        Google Compute Engine, or other plugins).
+     *) Configure the cloud-specific settings, such as API credentials, templates, and instance size.
+     *) Click "Save" to add the cloud configuration.
+
+    2) Modifying a Cloud Configuration
+
+     *) Click on the name of an existing cloud configuration in the list.
+     *) Make the necessary changes, such as updating API credentials or 
+        modifying the instance templates.
+     *) Click "Save" to apply the modifications.
+
+    3) Deleting a Cloud Configuration:
+
+      *) Click on the name of an existing cloud configuration.
+      *) In the cloud configuration page, scroll down and click "Delete"
+         to remove the cloud configuration.
+
+Example Scenario:-
+
+  *) Suppose you want to set up a Linux build node using a permanent agent and a 
+   cloud configuration for provisioning Windows build agents on Amazon EC2 instances
+  *) Create a permanent agent named "Linux Worker" with 2 executors, a remote root directory
+     of /var/jenkins, and a label "linux."
+  *) Configure a cloud named "EC2 Windows Agents" to provision Windows build agents on Amazon EC2. 
+     You'll specify your AWS credentials, configure instance templates for Windows, and set up labels
+     for the agents.
+  *) Once configured, Jenkins can automatically provision Windows agents on EC2 when the workload increases,
+     and they will be labeled accordingly for use in your Jenkins jobs
+
+
+*) Script Console
+
+  1) Listing All Nodes in Jenkins
+
+    You can use the Script Console to list all nodes (build agents) in your Jenkins instance.
+    This can be helpful for troubleshooting or monitoring the status of your build nodes.
+
+     import jenkins.model.Jenkins
+
+     def jenkins = Jenkins.getInstance()
+     def nodes = jenkins.nodes
+
+      nodes.each { node ->
+    println("Node Name: ${node.displayName}, Computer: ${node.computer.name}")
+}
+
+2) Creating a New Job
+
+   You can use the Script Console to create a new job (project) in Jenkins programmatically.
+   we'll create a new Freestyle project.
+
+   import hudson.model.*
+   import jenkins.model.*
+
+   def jobName = "MyNewJob"
+
+   def jenkins = Jenkins.getInstance()
+   def project = jenkins.createProject(FreeStyleProject, jobName)
+
+   project.save()
+
+   println("Job '$jobName' created successfully.")
+
+3) Listing All Build Jobs in Jenkins
+
+   You can use the Script Console to list all build jobs in Jenkins.
+  This is helpful for generating reports or analyzing the state of your
+  Jenkins projects.
+
+    import jenkins.model.*
+
+    def jenkins = Jenkins.getInstance()
+    def jobs = jenkins.items
+
+    jobs.each { job ->
+    println("Job Name: ${job.displayName}, Job URL: ${job.absoluteUrl}")
+  }
+
+ 4) Triggering a Build Job
+
+   You can use the Script Console to trigger a build for a specific job.
+   This can be useful for automating build executions or re-running failed builds.
+
+    import jenkins.model.*
+    import hudson.model.*
+
+    def jobName = "MyJobToBuild"
+
+    def jenkins = Jenkins.getInstance()
+    def job = jenkins.getItem(jobName)
+
+    if (job instanceof AbstractProject) {
+    def cause = new Cause.UserIdCause()
+    job.scheduleBuild2(0, cause)
+    println("Build triggered for job: $jobName")
+  } else {
+    println("Job not found: $jobName")
+}
+
+5) Disabling All Jobs in Jenkins
+
+  You can use the Script Console to disable all jobs in Jenkins. This is useful when 
+   you need to temporarily stop all builds, for example, during maintenance or
+   troubleshooting.
+
+   import jenkins.model.*
+
+   def jenkins = Jenkins.getInstance()
+   def jobs = jenkins.items
+
+   jobs.each { job ->
+    job.disable()
+    println("Job disabled: ${job.displayName}")
+  }
+
+
+*) System Information
+
+    In Jenkins, the "System Information" page provides a wealth of information about
+    your Jenkins instance's configuration, environment, and system properties. This
+    information is valuable for troubleshooting and diagnosing issues, as well as for
+    understanding the runtime environment of Jenkins.
+
+  1) Jenkins Version and Environment Information
+
+     You can find information about the Jenkins version, the Java runtime environment,
+     and the operating system.
+
+  2) Configuration Details
+
+     *) Jenkins Home:- 
+       The path to the Jenkins home directory.
+     *) Workspace Root Directory:-
+        The root directory where Jenkins workspace files are stored.
+     *) Jenkins URL:-
+        The URL where Jenkins is accessible.
+
+  3) Node and Agent Information
+
+    *) Available Nodes:-
+      Information about all the build nodes (agents) and their current status.
+    *) Node Workspaces:-
+     Details about workspaces on each node, including their disk usage.
+
+   4) JVM and System Properties
+
+     *) Java Virtual Machine (JVM):-
+       Information about the Java runtime being used, including JVM version and memory settings.
+     *) System Properties:-
+       A list of system properties, such as Java version, user home, and more.
+
+    5) Plugin Information
+
+      *) Installed Plugins:-
+         A list of all installed plugins, along with their versions.
+      *) Plugin Information:-
+        Details about each installed plugin, including the provider, version, and dependencies.
+
+    6) Environment Variables
+
+       Environment Variables:-
+         A list of environment variables set in the Jenkins environment, which can be helpful for 
+         understanding build environments
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
          
