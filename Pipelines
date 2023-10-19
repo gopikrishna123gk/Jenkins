@@ -131,8 +131,10 @@ pipeline {
 
   *) In this Jenkinsfile:
 
-      *) We define a pipeline with three stages: Checkout, Provision Infrastructure,
-        and Deploy Application.
+      *) We define a pipeline with three stages:
+          1) Checkout 
+          2) Provision Infrastructure
+          3)  Deploy Application.
       *) In the environment section, we set the ANSIBLE_HOSTS environment variable to 
           specify the path to your Ansible inventory file (e.g., inventory.ini).
       *) In the Provision Infrastructure and Deploy Application stages, we use the 
@@ -488,8 +490,10 @@ pipeline {
 
 In this Jenkinsfile
 
-  *) We define a pipeline with three stages: Checkout, Provision AWS Resources,
-    and Deploy Application.
+  *) We define a pipeline with three stages:
+      1) Checkout 
+      2) Provision AWS Resources
+      3) Deploy Application.
   *) In the Provision AWS Resources stage, we use the AWS CLI to provision 
      AWS resources. You can customize this stage to create EC2 instances, manage
      RDS databases, deploy CloudFormation stacks, etc.
@@ -502,6 +506,273 @@ In this Jenkinsfile
       AWS with Jenkins. The specific implementation may vary depending on your project,
       the AWS services you need to interact with, and your AWS infrastructure-as-code
       (IAC) setup.
+
+
+*) Pipeline for integarating Apache tomcat with jenkins
+
+
+pipeline {
+    agent any
+
+    environment {
+        TOMCAT_HOME = "/path/to/tomcat" 
+       // Update this to your Tomcat installation directory
+        WAR_FILE = "your-app.war"      
+       // Update this to your WAR file name
+        CONTEXT_PATH = "/your-app"      
+      // Update this to your web application's context path
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Checkout your Java web application source code from Git
+                // git url: 'https://github.com/yourusername/your-app.git'
+            }
+        }
+
+        stage('Build WAR') {
+            steps {
+                // Build your Java web application with Maven
+                // sh "mvn clean package"
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                // Stop Tomcat
+                sh "$TOMCAT_HOME/bin/shutdown.sh"
+
+                // Remove the existing application (if any)
+                sh "rm -rf $TOMCAT_HOME/webapps/$CONTEXT_PATH"
+
+                // Deploy the new WAR file
+                sh "cp target/$WAR_FILE $TOMCAT_HOME/webapps/$CONTEXT_PATH.war"
+
+                // Start Tomcat
+                sh "$TOMCAT_HOME/bin/startup.sh"
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment successful'
+        }
+        failure {
+            echo 'Deployment failed'
+        }
+    }
+}
+
+
+*) Pipeline for integrating Nagios with Jenkins
+
+
+pipeline {
+    agent any
+
+    environment {
+        NAGIOS_HOST = "nagios.example.com" 
+        // Update to your Nagios server hostname or IP
+        NAGIOS_CMD_FILE = "/usr/local/nagios/var/rw/nagios.cmd" 
+        // Update to your Nagios command file path
+        NAGIOS_SERVICE = "your-service-name" 
+        // Update to the service you want to check
+    }
+
+    stages {
+        stage('Nagios Monitoring') {
+            steps {
+                script {
+                    // Send a passive check result to Nagios
+                    def checkResult = "echo \"[`date '+%s'`] 
+                    PROCESS_SERVICE_CHECK_RESULT;${NAGIOS_HOST};
+                    ${NAGIOS_SERVICE};0;OK - Jenkins Pipeline\"
+                    >> ${NAGIOS_CMD_FILE}"
+                    sh checkResult
+                }
+            }
+        }
+
+        stage('Build and Deploy') {
+            steps {
+                // Your build and deployment steps go here
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment successful'
+        }
+        failure {
+            echo 'Deployment failed'
+            script {
+                // Send a passive check result indicating a failure to Nagios
+                def checkResult = "echo \"[`date '+%s'`] PROCESS_SERVICE_CHECK_RESULT;
+                ${NAGIOS_HOST};${NAGIOS_SERVICE};2;CRITICAL - Jenkins Pipeline Failed\"
+                >> ${NAGIOS_CMD_FILE}"
+                sh checkResult
+            }
+        }
+    }
+}
+
+
+*) Pipeline for integrating microservices with Jenkins
+
+
+     we'll assume you have two microservices
+        1) service-A 
+        2) service-B.
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Service A') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build and Test Service A') {
+            steps {
+                dir('service-A') {
+                    sh 'npm install' 
+             // Or use the appropriate build commands
+                    sh 'npm test'
+                }
+            }
+        }
+
+        stage('Deploy Service A') {
+            steps {
+                dir('service-A') {
+                    sh 'kubectl apply -f deployment.yaml' 
+                 // Deploy using Kubernetes as an example
+                }
+            }
+        }
+
+        stage('Checkout Service B') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build and Test Service B') {
+            steps {
+                dir('service-B') {
+                    sh 'mvn clean install'  
+           // Or use the appropriate build commands
+                }
+            }
+        }
+
+        stage('Deploy Service B') {
+            steps {
+                dir('service-B') {
+                    sh 'docker build -t service-b .'
+                    sh 'docker run -d -p 8081:8081 service-b' 
+                 // Example for deploying a Docker container
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment successful'
+        }
+        failure {
+            echo 'Deployment failed'
+        }
+    }
+}
+
+
+*) Pipeline for integrating Openshift with Jenkins
+
+     Before using this script, you should have the OpenShift CLI (oc) configured on 
+     your Jenkins server, and Jenkins should have access to your OpenShift cluster.
+
+pipeline {
+    agent any
+
+    environment {
+        OPENSHIFT_PROJECT = "your-project"    
+       // Update to your OpenShift project
+        OPENSHIFT_APP_NAME = "your-app-name"  
+      // Update to your OpenShift application name
+        GIT_REPO_URL = "https://github.com/yourusername/your-app.git"
+       // Your application's Git repository URL
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Checkout your application's source code from a Git repository
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']],
+                doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],
+                userRemoteConfigs: [[url: "${GIT_REPO_URL}"]]])
+                 here:- your git repo url
+            }
+        }
+
+        stage('Build and Deploy to OpenShift') {
+            steps {
+                script {
+                    // Log in to OpenShift (you should configure credentials in Jenkins)
+                    sh "oc login --server=https://your-openshift-cluster-url --token=your-token"
+
+                    // Ensure that the OpenShift project exists
+                    sh "oc project ${OPENSHIFT_PROJECT} || oc new-project ${OPENSHIFT_PROJECT}"
+
+                    // Build and deploy the application to OpenShift
+                    sh "oc new-app ${GIT_REPO_URL} --name=${OPENSHIFT_APP_NAME} -n ${OPENSHIFT_PROJECT}"
+
+                    // Expose the application route
+                    sh "oc expose svc/${OPENSHIFT_APP_NAME} -n ${OPENSHIFT_PROJECT}"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment successful'
+        }
+        failure {
+            echo 'Deployment failed'
+        }
+    }
+}
+
+*) In this Jenkins pipeline script:
+
+  *) The pipeline is defined to run on any available Jenkins agent.
+  *) In the environment block, you specify the OpenShift project, application name,
+    and Git repository URL for your application.
+
+*) The pipeline includes two stages:
+  *) The "Checkout Code" stage checks out your application's source code from 
+     a Git repository.
+*) The "Build and Deploy to OpenShift" stage logs in to your OpenShift cluster,
+   ensures the OpenShift project exists, and deploys your application using the 
+   oc command-line tool.
+*) The post section provides a basic response for success and failure of the deployment.
+
+
+
+
+
+
+
+
+
+
 
 
 
