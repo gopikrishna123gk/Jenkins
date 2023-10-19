@@ -765,6 +765,58 @@ pipeline {
 *) The post section provides a basic response for success and failure of the deployment.
 
 
+*) Pipeline for integrating Helm-Charts with Jenkins
+
+
+pipeline {
+    agent any
+
+    environment {
+        HELM_CHART_REPO_URL = "https://charts.example.com/stable"  
+        // URL to your Helm chart repository
+        HELM_CHART_NAME = "my-app"           // Name of your Helm chart
+        HELM_CHART_VERSION = "1.0.0"        // Version of the Helm chart
+        KUBE_CONFIG = "/path/to/kubeconfig" 
+       // Path to your Kubernetes cluster's kubeconfig file
+        KUBE_NAMESPACE = "my-namespace"    
+      // Kubernetes namespace for deployment
+    }
+
+    stages {
+        stage('Install Helm Chart') {
+            steps {
+                script {
+                    // Set up kubectl to use the provided kubeconfig file
+                    sh "export KUBECONFIG=${KUBE_CONFIG}"
+
+                    // Add the Helm repository
+                    sh "helm repo add my-repo ${HELM_CHART_REPO_URL}"
+
+                    // Update the Helm repositories
+                    sh "helm repo update"
+
+                    // Install the Helm chart
+                    sh "helm install ${HELM_CHART_NAME} my-repo/${HELM_CHART_NAME} --version
+                    ${HELM_CHART_VERSION} --namespace ${KUBE_NAMESPACE}"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment successful'
+        }
+        failure {
+            echo 'Deployment failed'
+        }
+    }
+}
+
+
+
+
+
 
 
 
