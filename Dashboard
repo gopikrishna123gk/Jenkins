@@ -1,1 +1,151 @@
+*) New Item Menu
 
+   *) On the Jenkins dashboard, click on the "New Item" link on the
+      left-hand side. This link may be labeled as 3 types:-
+            1) "New Project"
+            2) "New Job," 
+            3) "New Item"
+         depending on your Jenkins version.
+    *) Jenkins supports various types of jobs, such as 
+          1) "Freestyle project," "Pipeline,
+          2) " "Multibranch Pipeline,"
+    and more. Choose the type that best suits your project requirements
+
+
+*) People
+
+  *) Create User Accounts
+
+     1) Click on "Manage Jenkins" in the left-hand menu.
+     2) Click on "Manage Users."
+     3) Click on "Create User" to add a new user account.
+        here declare the:-
+         username:-
+         fullname:-
+            email:-
+          password:-
+
+
+*)  Assign Roles and Permissions
+
+   1) Click on "Manage Jenkins" in the left-hand menu.
+   2) Click on "Manage and Assign Roles."
+   3) Click on "Manage Roles."
+   4) Create a new role and define the permissions for that role.
+          Example:
+          Role Name: "DevOps Engineer"
+   5) Assign global read access for viewing job configurations and build results.
+   6)  Assign job-specific access to specific projects if needed.
+   7) Click "Save" to create the new role.
+
+
+*) Assign Users to Roles
+
+  1) Click on "Manage Jenkins" in the left-hand menu.
+  2) Click on "Manage and Assign Roles."
+  3) Click on "Assign Roles."
+  4) Select the user you created earlier (e.g., GK).
+  5) Assign the user to a role (e.g., DevOps).
+  6) Click "Save" to assign the role to the user.
+
+*)  Access Control for Projects
+
+   1) Open a specific project by clicking on its name in the Jenkins dashboard.
+   2) Click "Configure" to access the job's configuration page.
+   3) In the "Build Triggers" section, you can set who is allowed to trigger the job.
+      Example:
+      *) Allow Anonymous users to trigger the job.
+      *) Restrict job triggering to users with specific roles, like "Tester."
+      *) Save the project configuration.
+
+*) User Authentication and Security
+
+   1) Jenkins provides various authentication methods, such as LDAP, Matrix-based security,
+      and more. You can configure these in 
+       *) "Manage Jenkins" 
+       *) "Configure Global Security."
+        Example:
+          *) Configure "Security Realm" to use "Matrix-based security."
+          *) Define the permissions for each user or role in the matrix.
+
+
+
+*) Build Executor Status
+
+     Build executors (also known as build agents or build nodes). Each executor represents
+     a worker nodes that can be used to run builds. The status of these executors is crucial
+     for understanding Jenkins' capacity and workload.
+
+*)  Accessing Build Executor Status
+
+  1) Click on the "Manage Jenkins" option on the left-hand side of the Jenkins dashboard.
+  2) Under the "Manage Jenkins" section, select "Manage Nodes and Clouds."
+  3) You'll see a list of available nodes (executors) and their current status in the
+    "Build Executor Status" section.
+
+*)  Interpreting Build Executor Status
+
+   1) Online:-
+     This means that the executor is available and ready to take on build jobs.
+   2) Idle:-
+     The executor is online but is not currently running any builds. It is available for work.
+   3) Building:-
+      This status indicates that the executor is actively running a build job.
+      You'll see the project name next to "Building" to show which job is currently being executed.
+   4) Temporarily Offline:-
+      The executor is offline but can be brought online again. This status
+      might occur if the node was temporarily taken offline for maintenance or other reasons.
+   5) Offline:-
+     The executor is not available for new builds. This could be due to maintenance, 
+     configuration issues, or administrative action.
+   6) Unreachable:-
+     This status usually indicates a connection issue between the Jenkins master server
+     and the executor node.
+
+*) Manage Jenkins Menu
+
+*) Configure System
+
+   1)  Accessing "Configure System"
+
+  *) Click on "Manage Jenkins" on the left-hand side of the Jenkins dashboard.
+  *) Under the "Manage Jenkins" section, select "Configure System."
+
+  2) Configure System-Wide Settings
+
+   You'll see a variety of settings and configurations you can modify on this page.
+
+     1. System Message:
+
+     You can add a system message that is displayed at the top of the Jenkins dashboard.
+     This is useful for important announcements.
+     Example:-
+     System Message: "Scheduled maintenance on Sunday, October 19th, from 1 AM to 5 AM.
+     Jenkins will be unavailable during this time."
+
+    2. Jenkins Location:
+
+     This setting allows you to specify the Jenkins URL, which can be useful for various purposes,
+     including email notifications.
+     Example:
+     Jenkins URL: "http://jenkins.example.com" (192.168.23.1)
+
+   3. Global properties:
+
+    You can define global environment variables (or) system properties that
+    will be available to all jobs.
+    Example:
+    Name: MY_GLOBAL_ENV_VAR
+    Value: 23
+
+  4) 4. E-mail Notification:
+
+     Configure the email server for sending email notifications, including settings 
+     for the default "System Admin e-mail address" and SMTP server details.
+     Example:
+     SMTP server: smtp.example.com
+     Default User E-mail suffix: gopikrishnakommineni@gmail.com
+
+
+
+         
