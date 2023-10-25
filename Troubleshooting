@@ -737,7 +737,7 @@
                     as expected. Document the testing procedure and results.
 
 
-*) Integration or Third-Party Tool Issues
+*) Integration (or) Third-Party Tool Issues
 
     1) Authentication Failures
 
@@ -827,6 +827,658 @@
                  provider's services.
         Solution:- Reach out to the third-party tool's support or community for guidance. Consider 
                    documenting your integration process as you figure it out to help others.
+
+
+
+*) HELIX_PLATFORM_DEPLOY pipeline failure issues
+
+
+     If HELIX_PLATFORM_DEPLOY pipeline fails or the pipeline execution halts due to errors about
+     Helm delete commands, such as helm delete --purge ar-db-setup-<CUSTOMER_SERVICE>-<ENVIRONMENT>
+     and helm delete --purge sr-db-setup-<CUSTOMER_SERVICE>-<ENVIRONMENT>, perform the following steps   
+
+      1) To stop the pipeline execution,  click the cross mark on the progress bar.
+      2) To check if the pipeline execution is stopped, click the pipeline name HELIX_PLATFORM_DEPLOY.
+      3) Edit the deployment input configuration file in the CUSTOMER_CONFIGS repository by using the 
+        URL https://github.bmc.com/DSOM-ADE/onprem-remedyserver-config/blob/master/customer/<CUSTOMER_SERVICE>
+        /<CUSTOMER_SERVICE>-<ENVIRONMENT>.sh
+      4) Update the following parameters:
+          AR_DB_RESTORE="false"
+          SMARTREPORTING_DB_RESTORE="false"
+      5) Rebuild the HELIX_PLATFORM_DEPLOY pipeline by selecting the IS_HELM3 check box.
+
+
+*)  fixing  Jenkins memory leak related issue
+
+
+     Fixing memory leaks in Jenkins can be a challenging task, as it often requires a combination of monitoring,
+     analysis, and code/configuration changes. Memory leaks in Jenkins can be caused by various factors,
+     including misconfigurations, insufficient plugins, and problematic job configurations.
+
+
+   1) Monitor Memory Usage
+
+       Start by monitoring 'Jenkins' memory usage to identify the memory leak. You can use tools like 
+       Monitoring plugin, J-VisualVM, (or) Java profilers like VisualVM to track memory usage over time.
+
+   2) Identify the Cause
+
+      Look for any abnormal trends in memory usage, such as consistent growth over time. Identify potential
+      culprits, which could include
+
+      *) Problematic Plugins:- Certain Jenkins plugins may have memory leaks. Disable (or) update any plugins
+         that might be causing issues.
+      *) Frequent Builds:- Identify any jobs or builds that consume excessive memory. Check if there are any
+         infinite loops or processes causing the problem.
+      *) Configuration Issues:- Ensure that your Jenkins master and agent configurations are optimal.
+         Review the JVM options (in the Jenkins master and agent configuration) and ensure they're
+         appropriate for your system's memory.
+
+   *) Hypothetical Example
+
+      Let's consider a hypothetical example where a Jenkins job runs a custom build script that leaks memory 
+      due to a misconfigured build environment.
+
+   *) Monitor Memory Usage
+
+       Using JVisualVM, you notice that the Jenkins master's memory usage steadily increases over time while 
+       running a particular job.
+
+   *)  Identify the Cause
+
+      a) You inspect the job configuration and discover that the build script spawns multiple processes,
+         but it fails to properly terminate them.
+      b) The job runs on a Docker agent, and the agent configuration does not limit memory (or) CPU usage
+         for containers.
+      c) There's a Jenkins plugin that's supposed to clean up workspace after the job but seems to
+         be malfunctioning.
+
+  4) Fix the Issue
+
+      *) Update the Jenkins Job
+
+         Modify the job to ensure that all spawned processes are properly terminated at the end of the build.
+
+      *) Configure Jenkins Agents
+
+         Set resource limits on Docker agents to restrict memory and CPU usage for containers to prevent
+         runaway processes.
+
+      *) Plugin Management
+
+         Update the malfunctioning plugin (or) find an alternative. You can also consider disabling (or)
+         removing plugins that are not essential.
+
+   5) Test and Monitor
+
+     After implementing these changes, re-run the problematic job, and monitor memory usage. Ensure that 
+     the memory leak issue is resolved.
+
+   6) Ongoing Monitoring
+
+    Continue monitoring Jenkins memory usage over time to ensure that the issue doesn't resurface. 
+    Regularly update Jenkins and its plugins to benefit from bug fixes and performance improvements.
+
+
+*) The existing heap space is insufficient for your 'Jenkins' increasing data size.
+
+     When you encounter the error message "The existing heap space is insufficient for your 'Jenkins'
+     increasing data size," it means that the Jenkins Java process is running out of heap memory, 
+     which is used for various tasks within Jenkins. To resolve this issue, you need to increase the
+     heap space allocated to Jenkins
+
+     Example:- You have a Jenkins server that runs out of memory during the execution of certain
+               resource-intensive jobs
+
+    1) Identify the Issue
+
+      Monitor Memory Usage:-
+       Use a monitoring tool (or) check the Jenkins logs to identify when and where the
+       "insufficient heap space" error occurs. Look for patterns, such as specific jobs (or) builds 
+        that consistently cause the problem.
+
+    2) Increase Jenkins Heap Space
+
+    *) Edit Jenkins Configuration:-
+
+      Go to your Jenkins server's home directory. It's typically located at '/var/lib/jenkins' on Linux.
+      Open the Jenkins Configuration File:
+      Use a text editor to open the jenkins.xml (or) jenkins.yaml configuration file. This file contains
+      configuration settings for Jenkins.
+          $ sudo nano /var/lib/jenkins/jenkins.xml
+      Locate JVM Options:-
+      Within the configuration file, locate the <arguments> (or) <javaOptions> section, where JVM options
+      are defined.
+
+   *) Increase Heap Space
+
+      Add or modify the JVM options to allocate more heap space to Jenkins. For example, to allocate 2GB of
+      heap space, you can add (or) modify the following line
+          <arguments>-Xmx2G</arguments>
+      This sets the maximum heap size (-Xmx) to 2GB. Adjust the value according to your system's available RAM.
+      Save and Close:- :wq
+      Save the configuration file and exit the text editor.
+      Restart Jenkins:-
+      To apply the changes, restart the Jenkins service.
+         $ sudo service jenkins restart
+
+
+ 3) Test and Monitor
+
+   *) Rerun the Problematic Job
+
+       After increasing the heap space, rerun the job or build that was previously causing the issue.
+       Monitor Memory Usage:-
+       Use monitoring tools to ensure that Jenkins no longer runs out of heap space during the execution
+       of the job.
+
+
+ 4) Ongoing Monitoring
+
+     Continue monitoring Jenkins' memory usage, especially when running resource-intensive jobs. If the problem
+     persists, consider further optimizing your Jenkins environment, such as job configurations, plugins, and 
+     other resource management settings.
+
+
+*) Insufficient virtual memory OS kernel 
+
+
+      The error message "Insufficient virtual memory OS kernel" typically indicates that the Jenkins server has 
+      run out of virtual memory (or) swap space, which can happen when the system's resources are exhausted. This
+      issue is not directly related to Jenkins itself but rather to the underlying operating system's configuration
+      and resource management. To resolve this issue, you need to take actions at the OS level.
+
+      Example:- Your Jenkins server running on a Linux-based system is encountering "Insufficient virtual memory
+                OS kernel" errors during certain resource-intensive operations.
+
+
+        1) Identify the Issue
+
+          *)Monitor System Resources:-
+
+            Use system monitoring tools to check the system's memory usage, including physical and virtual memory 
+            (swap). Identify when and where the "Insufficient virtual memory OS kernel" error occurs.
+
+       2) Increase Virtual Memory (Swap)
+
+         *) Check Existing Swap Space:-
+            To see the current swap space configuration, you can use the free -h command:
+                  $ free -h
+
+         *) Create a Swap File:-
+
+            If the existing swap space is insufficient, you can create a new swap file. For example, 
+            to create a 2GB swap file
+              $ sudo fallocate -l 2G /swapfile
+
+         *) Set Appropriate Permissions:-
+
+              Secure the swap file by restricting access
+                 $ sudo chmod 600 /swapfile
+
+         *) Enable the Swap File:-
+
+             Activate the new swap file
+               $ sudo mkswap /swapfile
+               $ sudo swapon /swapfile
+
+         *) Edit /etc/fstab:-
+
+            To ensure the swap file is enabled on boot, add it to /etc/fstab
+              $ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
+        *) Check Swap Space:-
+
+            Verify that the swap file is available
+                $ sudo swapon --show
+
+    3) Test and Monitor
+
+       *) Rerun the Problematic Jenkins Task:-
+
+           After increasing the swap space, rerun the task (or) operation that was previously encountering the
+           "Insufficient virtual memory OS kernel" error.
+
+       *) Monitor System Resources:-
+
+           Use system monitoring tools to verify that the error no longer occurs and that the system has sufficient 
+           virtual memory to handle the operation.
+
+   4) Ongoing Monitoring
+
+       Continue to monitor system resources and ensure that the swap space remains adequate for Jenkins and other
+       applications running on your server.
+       If the problem persists or worsens, consider optimizing the resource usage of your Jenkins jobs or evaluating
+       whether your server's physical RAM needs to be upgraded to provide more memory.
+
+
+
+*) Need for larger headroom due to a surge in processing temporary data i.e., test reports
+
+     In Jenkins, a need for larger headroom due to a surge in processing temporary data, such as test reports,
+     can arise when the volume of data generated by builds or tests exceeds the available memory, leading to
+     performance issues or failures. To address this need, you might consider increasing heap space and optimizing
+     your Jenkins configuration
+
+      Example:- Your Jenkins server is encountering performance issues, and builds are failing when processing a 
+                surge in test reports due to a sudden increase in test coverage.
+
+       1) Identify the Issue
+
+        *) Monitor Memory Usage:-
+
+          Use system monitoring tools or Jenkins monitoring plugins to analyze memory usage during the build and 
+          test processes.
+
+       *) Review Build and Test Configuration:-
+
+           Examine the job configurations, especially those related to builds and tests. Check for the size and volume
+           of test reports generated during builds.
+
+       2) Increase Jenkins Heap Space
+
+         *) Edit Jenkins Configuration:-
+
+            Go to the Jenkins server's home directory, typically located at /var/lib/jenkins on Linux.
+
+         *) Open the Jenkins Configuration File:-
+
+             Use a text editor to open the jenkins.xml or jenkins.yaml configuration file. This file contains
+             configuration settings for Jenkins.
+                $ sudo nano /var/lib/jenkins/jenkins.xml
+
+         *) Locate JVM Options:-
+
+            Within the configuration file, locate the <arguments> or <javaOptions> section, where JVM options
+            are defined.
+
+         *) Increase Heap Space:-
+
+           Add (or) modify the JVM options to allocate more heap space to Jenkins. For example, to allocate 4GB 
+           of heap space
+             <arguments>-Xmx4G</arguments>
+           Adjust the value according to your system's available RAM.
+            Save and Close: wq!
+           Save the configuration file and exit the text editor.
+           Restart Jenkins:
+           To apply the changes, restart the Jenkins service.
+              $ sudo service jenkins restart
+
+
+     3) Optimize Test Report Handling
+
+       *) Job Configuration Optimization:-
+
+           Review and optimize the job configurations. Ensure that test reports are processed efficiently,
+           and that you're not generating unnecessary reports.
+
+       *) Test Report Archiving:-
+
+          Implement archiving or storing test reports externally or in a more efficient manner to reduce the 
+          load on Jenkins.
+
+    4) Test and Monitor
+
+       *) Rerun the Problematic Builds:-
+
+          After increasing heap space and optimizing configurations, rerun the builds that previously encountered
+          issues with processing test reports.
+
+       *) Monitor Resource Usage:-
+
+          Use monitoring tools to verify that the performance issues are resolved and that there's sufficient headroom
+          for processing temporary data, like test reports.
+
+
+*) What If Jenkins hangs
+
+     Jenkins hanging or becoming unresponsive can be caused by various issues related to system resources,
+     misconfigurations, job configurations, or problems with plugins
+
+     Example:- Jenkins becomes unresponsive when running a specific build job.
+
+
+    1) Identify the Issue
+
+     *) Monitor Resource Usage:-
+
+        Use system monitoring tools to check CPU, memory, and disk usage on the Jenkins server when
+        the hang occurs.
+
+     *) Check Logs:-
+
+       Review Jenkins logs for any error messages or warnings related to the problematic job or any other
+       suspicious entries.
+
+    2) Investigate the Cause
+
+     *) Review Job Configuration:-
+
+         Examine the configuration of the specific job that's causing the issue. Check for potential issues,
+         such as incorrect build steps, infinite loops, or misconfigured parameters.
+         Example:- You find that the job is running a script that enters an infinite loop due to a coding error.
+
+     *) Check for Plugin Issues:-
+
+         Some Jenkins plugins may cause hanging issues. Disable (or) update any plugins that may be related to the
+         problematic job.
+         Example:- A particular build plugin that hasn't been updated for a long time is causing the hang. You can
+                   either update it or find an alternative.
+
+     *) Jenkins Master and Agent Configuration:-
+
+       Ensure that Jenkins master and agent configurations are optimal. Review the JVM options in the Jenkins master
+       and agent configurations to make sure they are appropriate for the system's resources.
+       Example:- You realize that the agent is running out of memory during the build job due to insufficient
+                 heap space.
+
+     3) Address the Issue
+
+       *) Modify Job Configuration:-
+
+           Adjust the job configuration to resolve any identified issues. In the example where an infinite loop is the
+           problem, fix the code or script to exit properly.
+
+       *) Update (or) Disable Problematic Plugins:-
+
+            Update (or) disable Jenkins plugins that are causing issues. Replace them with more up-to-date (or) reliable 
+            alternatives if needed.
+
+       *) Optimize JVM Options:-
+
+          Review and adjust JVM options for Jenkins master and agents. Ensure they are suitable for the system's hardware
+          and workload.
+
+       *) Test the Job:-
+
+           Rerun the problematic job and monitor it to ensure that the hang issue has been resolved.
+
+
+*) Site is down with no 404 messages
+
+   Scenario 1:-  Incorrect URL in Jenkins Job Configuration
+   Issue:- Jenkins is unable to access a website, and there are no 404 errors. The URL in the job
+           configuration is incorrect.
+   Example:-
+      Suppose you have a Jenkins job that's set up to fetch a specific artifact from a remote repository
+      using a URL, and it's failing with no 404 errors. After thorough investigation, you discover that 
+      the URL in the job configuration is incorrect. The URL points to a non-existent (or) misspelled
+      repository
+   
+
+   Troubleshooting Steps:-
+
+    *) Identify the Issue:-
+
+         Check the Jenkins job configuration for the URL that's being accessed.
+
+    *) Investigate the Cause:-
+
+         Review the job configuration and confirm that the URL is accurate. Ensure that it points to the
+         correct location where the artifact is located.
+
+   *) Address the Issue:-
+
+        Correct the URL in the job configuration to accurately point to the artifact's location.
+
+
+Scenario 2:- Network Connectivity Issue
+Issue:- Jenkins cannot access a website, and there are no 404 errors. The issue is related to network
+        connectivity.
+Example:-
+      Your Jenkins server is unable to access external websites during job execution. After further
+      investigation, you determine that the server's outbound network traffic is blocked by a 
+      firewall rule.
+
+Troubleshooting Steps:-
+
+   *) Identify the Issue:-
+
+        Verify if Jenkins is experiencing network-related problems.
+
+   *) Investigate the Cause:-
+
+       Check the Jenkins server's network connectivity. Confirm that it can access external websites 
+       and services. Review firewall rules that might be blocking outgoing traffic.
+
+   *) Address the Issue:-
+
+      Modify the firewall rules to allow outbound traffic from the Jenkins server. This will ensure that 
+      Jenkins can access external websites.
+
+
+Scenario 3:- Website Requires Authentication
+Issue:- Jenkins is unable to access a website, and there are no 404 errors. The website requires authentication,
+        but Jenkins does not have the necessary credentials.
+Example:
+     A Jenkins job is set up to fetch artifacts from a secured repository that requires username and password
+     authentication. The job fails without displaying 404 errors. The issue is that the Jenkins job configuration
+     does not include the required authentication details.
+
+Troubleshooting Steps:-
+
+   *) Identify the Issue:-
+
+       Confirm whether the website requires authentication.
+
+   *) Investigate the Cause:-
+
+       Check the Jenkins job configuration to see if it includes the necessary authentication details such as a
+       username and password.
+
+   *) Address the Issue:-
+
+      Update the job configuration to include the required authentication credentials, ensuring Jenkins can access 
+      the secured website.
+
+Scenario 4:- Website Downtime
+Issue:- Jenkins is unable to access a website, and there are no 404 errors. The website is temporarily
+        down for maintenance.
+Example:-
+     Jenkins is configured to access an external API to retrieve data as part of a build job. During the build, 
+     Jenkins fails to access the API and doesn't report 404 errors. After investigating, you discover that the
+     API service is down for scheduled maintenance.
+
+Troubleshooting Steps:-
+
+   *) Identify the Issue:-
+
+        Visit the website (or) API manually to see if it's unavailable.
+
+   *) Investigate the Cause:-
+
+       Verify if the website (or) API is indeed down for maintenance. Check for any maintenance notices (or) outage
+       announcements.
+
+   *) Address the Issue:-
+
+      Wait for the scheduled maintenance to complete, and then Jenkins should be able to access the website once it's
+      back online.
+
+
+
+Scenario 5:- Website Server Configuration Issue
+Issue:- Jenkins cannot access a website, and there are no 404 errors. The website server may have
+        configuration issues.
+Example:-
+       Jenkins is configured to interact with a web service, but it's unable to connect. After reviewing 
+       the server logs of the website, you discover that the server has a misconfigured firewall rule that's 
+       blocking incoming connections.
+
+Troubleshooting Steps:-
+
+   *) Identify the Issue:-
+
+       Consider that the website's server might be misconfigured.
+
+   * Investigate the Cause:-
+
+      Examine the server logs for any errors or misconfigurations. In this case, you find evidence of the
+      misconfigured firewall rule.
+
+   *) Address the Issue:-
+
+      Contact the administrators of the website's server to address the misconfigured firewall rule, allowing 
+      Jenkins to access the web service.
+
+
+*) Site is up however no jobs are displayed
+
+     When Jenkins is running, but no jobs are displayed, it can be a perplexing issue. This can occur for various
+     reasons, such as misconfigurations, problems with job configurations, or even Jenkins-specific problems.
+
+      Scenario:- Jenkins is running, but no jobs are displayed in the Jenkins dashboard.
+      Example:-
+          Suppose you've set up Jenkins to manage your continuous integration and delivery pipelines, and suddenly,
+          you can't see any jobs listed on the Jenkins dashboard. It appears empty, although you know you've
+          defined and configured jobs in Jenkins.
+
+   Troubleshooting Steps:-
+
+    1) Identify the Issue:-
+
+            Start by verifying that Jenkins is running, and there are no issues with the Jenkins server itself.
+
+    2) Investigate the Cause:-
+
+            In this case, we'll explore possible root causes more deeply
+
+      a) Jenkins Configuration Issues:-
+
+              Check if there are any problems with the global Jenkins configuration. Incorrect configurations can lead 
+              to unexpected behavior.
+      Example:- Your Jenkins master server might have its JENKINS_HOME environment variable set incorrectly, causing 
+                Jenkins to look for jobs in the wrong location.
+
+      b) Job Configuration Problems:-
+
+           Review the configurations of your jobs. Misconfigurations, such as incorrect project names or workspace 
+           settings, can result in jobs not appearing.
+      Example:- A job might be using a workspace location that no longer exists, making it seem as though the job is
+                missing.
+
+      c) Permissions and Security:-
+
+        Verify that Jenkins permissions and security settings are properly configured. In some cases, misconfigured 
+        security settings can hide jobs from certain users or groups.
+     Example:- The permissions for your jobs may have been inadvertently modified, making them invisible to your 
+               user account.
+
+     d) Data Corruption (or) Loss:-
+
+        Check for any potential data corruption or loss. Data loss due to system issues can result in
+        jobs disappearing.
+    Example:- The Jenkins data directory might have suffered data corruption, leading to the disappearance 
+              of job information.
+
+  3) Address the Issue:-
+
+      *) Depending on the identified cause:-
+
+         a) If it's a Jenkins configuration issue, review the Jenkins configuration files and settings to correct
+           any misconfigurations.
+         b) For job configuration problems, adjust the job settings to resolve any misconfigurations.
+         c) If it's a permissions or security issue, review Jenkins security settings and ensure the appropriate
+            permissions are in place.
+         d) In the case of data corruption or loss, consider restoring from a backup if available or rebuilding your
+            Jenkins configuration.
+
+  4) Ongoing Monitoring and Maintenance:-
+
+        monitor the health and status of your Jenkins installation to catch and address any issues promptly.
+
+
+*) java.lang.outofmemoryerror permgen space issues
+
+    The java.lang.OutOfMemoryError: PermGen space error in Jenkins is typically related to memory issues in the
+    Permanent Generation (PermGen) space of the Java Virtual Machine (JVM). This error occurs when Jenkins(or)its
+    plugins require more PermGen space than is allocated to the JVM. To address this issue, you may need to adjust
+    JVM options and, in some cases, analyze the root causes.
+
+    Scenario:-  You encounter the java.lang.OutOfMemoryError: PermGen space error in Jenkins, specifically due to 
+                running a Maven build job with a heavy reliance on custom plugins and extensive class loading.
+
+    Example:-
+      Imagine you have a Jenkins job configured to build a Java project using Apache Maven, which relies on numerous
+      custom plugins and dynamically loads classes during the build process. After running the job, you consistently
+      encounter the 'java.lang.OutOfMemoryError:' PermGen space error.
+
+   Troubleshooting Steps:-
+
+    1) Identify the Issue
+
+        You observe the java.lang.OutOfMemoryError: PermGen space error in Jenkins logs while running specific jobs, 
+        indicating a PermGen space issue.
+
+    2) Investigate the Cause
+
+     a) Inadequate PermGen Space Allocation
+
+        Review the Jenkins master's JVM options, particularly the PermGen space allocation. Jenkins often starts with
+        minimal PermGen space. It may not be sufficient for your specific job requirements.
+        Example:-
+        You inspect the Jenkins configuration and discover that the PermGen space is set to a very low value,
+        e.g., -XX:MaxPermSize=128M, which is insufficient for your job.
+
+     b) Heavy Reliance on Custom Plugins and Dynamic Class Loading
+
+         Consider whether your Maven build job (or) Jenkins plugins are loading custom classes dynamically (or) using
+         extensive custom plugins, leading to increased PermGen space requirements.
+       Example:-
+         Your Maven build job uses a custom plugin that dynamically loads additional libraries and classes. 
+         This heavy usage of custom classes leads to a depletion of the available PermGen space.
+
+    c) Memory Leaks in Plugins
+
+        Investigate the Jenkins plugins being used. Some plugins may have memory leak issues, leading to the gradual 
+        exhaustion of PermGen space.
+      Example:-
+          You discover that a specific Jenkins plugin has memory leak issues, causing it to consume more and more PermGen
+          space with each build job.
+
+   3) Address the Issue
+
+     a) Inadequate PermGen Space Allocation
+
+         Update your Jenkins server's JVM options to allocate more PermGen space. You can do this by modifying the 
+         JENKINS_ARGS in the Jenkins server's configuration file.
+       Example:-
+           Increase the PermGen space allocation by modifying the Jenkins configuration to include 
+           -XX:MaxPermSize=256M.
+
+    b) Heavy Reliance on Custom Plugins and Dynamic Class Loading
+
+        Optimize your Jenkins job configuration and plugins to reduce the need for excessive PermGen space. You may need
+        to reconsider whether certain dynamic class loading or custom plugins are necessary.
+      Example:-
+          Revise your Maven build job to load fewer custom classes dynamically and refactor the plugin usage to be more
+          efficient.
+
+   c) Memory Leaks in Plugins
+
+        Address memory leak issues by updating or replacing problematic plugins with versions that do not have memory leak 
+        problems.
+     Example:-
+         You upgrade the problematic Jenkins plugin to a version that has resolved the memory leak issues.
+
+   4) Ongoing Monitoring and Maintenance
+
+       Continuously monitor Jenkins memory usage, especially when dealing with custom plugins or dynamic class loading. 
+       Regularly review and update configurations to prevent memory-related errors.
+
+
+
+
+   
+
+
+
+
+
+    
+
+
+
 
 
 
