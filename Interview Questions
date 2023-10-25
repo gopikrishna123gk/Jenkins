@@ -510,7 +510,7 @@
        efficient resource utilization.
 
   19) Jenkins shared libraries are a powerful feature. Provide an example of a complex Jenkins shared library and explain
-      its benefits in maintaining Jenkins pipelines.
+      its benefits in maintaining Jenkins pipelines?
 
        A shared library can include functions for handling deployments across multiple environments. For instance, you 
        might have a shared library that defines deployment strategies (e.g., Blue-Green, Canary) and provides reusable 
@@ -519,9 +519,151 @@
 
   20) Discuss the challenges and best practices for handling secrets and credentials in Jenkins, particularly in a 
       Jenkins pipeline, and explain the use of Jenkins' built-in credential handling versus external solutions like
-      HashiCorp Vault.
+      HashiCorp Vault?
 
        One challenge is securely storing sensitive data like API keys. Jenkins provides a built-in credential store where
        you can store credentials securely and use them in pipelines. Alternatively, you can integrate with external solutions
        like HashiCorp Vault to store and manage secrets. In a Jenkins pipeline, you'd use these credentials or secrets to
        access external systems securely.
+
+  21) How to fix a broken build in your project?
+
+       *) The user needs to open the console output for the build and will try to see if any file changes that were missed
+          during building the project. If there are no issues on that then a better approach would be clean and update his 
+          local workspace to replicate the problem on their local machine and will try to solve it.
+      *) To make sure Jenkins build is not broken at all we need to make sure that we perform a successful clean install
+         on the local machine with all unit tests. Then make sure that all code changes are checked in without any issues.
+         Then synchronize with a repository to make sure that all required config and changes and any differences are  
+         checked into the repository. 
+
+  22) How to Move (or) copy Jenkins one server to another?
+
+       *) Slide a job from one installation of Jenkins to another by copying the related job directory
+       *) Make a copy of an already existing job by making a clone of a job directory by a different name
+       *) Renaming an existing job by renaming a directory.
+
+  23) What do you mean by Jenkins File and it's Advantages?
+
+      A Jenkins file is a text file that contains the definition of a Jenkins Pipeline and it is generally checked
+      into source control. 
+       *) Audit trail for the Pipeline can be monitored
+       *) It serves as a single source of truth for the Pipeline, which can be viewed and edited by multiple members 
+          of the project.
+
+  24) What is the Use of Setting environment directive?
+
+      The environment directive specifies a sequence of key-value pairs which will be defined as environment variables
+      for the all steps, or stage-specific steps, depending on where the environment directive is located within the 
+      Pipeline. This directive supports a special helper method credentials() which can be used to access pre-defined
+      Credentials by their identifier in the Jenkins environment.
+
+  25) What are the Stages in Jenkins?
+
+       A stage block defines a conceptually distinct subset of tasks performed through the entire Pipeline. Stages contain
+       a sequence of one or more stage directives, the stages section is where the bulk of the "work" described by a Pipeline 
+       will be located. Minimum, it is recommended that stages contain at least one stage directive for each discrete part 
+       of the continuous delivery process, such as Build, Test, and Deploy.
+
+  26) How can you define Continuos delivey?
+
+      Continuous delivery (CD ) is a product design methodology in which team software in short cycles, guaranteeing that 
+      the product can be dependably released whenever and, when releasing the product, doing as such manually. It goes for
+      building, testing, and releasing programming with more prominent speed and recurrence. The methodology lessens the cost,
+      time, and risk of conveying changes by considering progressively gradual updates to applications underway.
+
+ 27)  How can you define Continuos integration?
+
+      Consistent integration is a procedure where all development work is incorporated as ahead of schedule as could 
+      reasonably be expected. The subsequent artifacts are consequently made and tried. This procedure permits to recognize
+      mistakes as ahead of schedule as could reasonably be expected. Jenkins is a well known open source device to perform
+      constant integration and build.
+
+  28) What does it meant to Shift left in DevOps?
+
+        If you somehow managed to diagram the conventional programming development life cycle on a bit of paper, the
+        left half of the chart would almost certainly incorporate tasks, for example, design and development, while the
+        right side would probably incorporate client feedback, stress testing, and production staging.
+
+  29) What is the use of Ansible in Jenkins?
+
+       *) Ansible is an incredible asset for IT automation and can be utilized in a CI/CD procedure to arrangement the
+          target environment and to an application on it. The most effective method to utilize Ansible for environment 
+          provisioning and application deployment in a Continuous Integration/Continuous Delivery (CI/CD) process utilizing
+          a Jenkins Pipeline. Jenkins is a notable tool for automation CI/CD. Shell scripts are regularly utilized for 
+          provisioning environments (or) to deploy applications amid the pipeline stream. Despite the fact that this could
+          work.
+       *) The motivation behind utilizing Ansible in the pipeline stream is to reuse jobs and Playbooks for provisioning,
+          leaving Jenkins just as a procedure orchestrator rather than a shell script agent.
+
+   30) Name 4 Kpi's in DevOps?
+
+       *) Deployment frequency:- The capacity to make code changes rapidly and effectively is a key upper hand for any 
+                                 organization that necessities to convey new highlights rapidly to clients, and react to
+                                 their feedback.
+      *) Speed of deployment:- Frequent code deployment depends in enormous part on having the option to move rapidly 
+                               from committed code to that code running effectively in the production condition.
+      *) Failure Rate:- It is extraordinary to send all the more regularly and rapidly, however on the off chance that
+                       changes bomb similarly as every now and again, you've picked up nothing. Failed deployments can
+                       bring services down, bringing about lost income and baffled clients. DevOps practices can have
+                       a major effect on the failure rate.
+      *) Time to Recovery:- At the point when service goes out, the capacity to recuperate rapidly can have an immense 
+                           effect on business results. It's not astonishing, at that point, that enormous web organizations
+                           like Google, Etsy, Netflix, and Amazon push the envelope in their endeavors to improve time to
+                           recuperation, normally breaking their applications and foundation to find -   arrangement
+                           against - anything that can turn out badly.
+
+  31) What do you do to make that your project build does'nt break in Jenkins?
+
+    *) We ensure that we perform effective clean introduce on our local machine with all unit tests. At that point, 
+       we ensure that we check in all code changes. We do complete a Synchronize with the archive to ensure that all
+       required config and POM changes and any differences are registered with the repository. You have to pursue the
+       underneath referenced strides to ensure that the Project build does not break:
+         *) Perfect and successful installation of Jenkins on your local machine with all unit tests.
+         *) All code changes are reflected effectively.
+         *) Checking for repository synchronization to ensure that every one of the distinctions and changes identified
+            with config and different settings is spared in the repository.
+   *) There is a "build failure analyzer plug-in" which tells us a reason for build failure in case the build gets failed
+      even after following the above steps. The module accompanies an empty information base of failure causes.
+      Populating this learning base is finished by utilizing the connection "Failure Cause Management". The connection
+      has appeared if the consent UpdateCauses is set for the current user. Press "Create New" and include a name and a
+      depiction for the Failure Cause. The depiction ought to contain the motivation behind why this build flopped just
+      as potential answers for the build failure.
+
+  32) Explain the trigger's?
+
+  *) There are various ways to re-trigger the pipeline in an automated way, triggers are characterized in the Jenkins. 
+     A few of pipelines are cooperating with sources like GitHub, BitBucket, or different triggers first then they are 
+     actualized to play out a particular activity.
+  *) A build trigger might be utilized for different purposes relying upon the context of the project.
+  *) For instance:- In the event that an enterprise might want to have a CI/CD pipeline setup utilizing Jenkins. In this
+     case, an organization can set up build triggers to trigger downstream system build, for example, 
+        *) Integration tests
+        *) Code health check up
+        *) Load Tests
+        *) Start to finish Tests
+        *) Deployment.
+  *) The above steps will be anchored to the parent work and can be activated one by one or in parallel contingent upon 
+     the stage (this is the place where build trigger is utilized, trigger the downstream system build if the parent build 
+     is a success).
+  *) Build occasionally can be utilized to keep running on standard jobs(in the event that we have a team set up which will 
+     be deploying master every evening). At that point, we can set up the jobs to build occasionally late night times at a 
+     fixed time (additionally the job can be activated dependent on progress as clarified in (1)
+  *) Polling SCM keeps checking for any new code addition by checking commit history and trigger build thereafter.Pooling
+     your archive and construct dependent on that.
+
+ 33) Polling a Git repository for new Commits is Considered a Jenkins anti-pattern, what is Sound alternative to SVN
+     Polling?
+
+     *)  A continuously checking /monitoring SCM tools like GIT or subversion for identifying any new commits are considered
+         a waste of clock cycles and not considered best practices. We should avoid this process. There is a better approach 
+         available to us which is a reversal of the above approach. The other approach is industry standard one and more 
+         popular. The other approach encourages build getting triggered from source code tool whenever new code is committed
+         (or) existing code undergoes some change. This is very easy to configure with GitHub or GItLab using a post-commit
+         hook that runs every time code commit is successful. This setup eliminates the need for constantly monitoring 
+         source code as a post-commit hook will trigger the build whenever any code gets committed in the source code.
+
+  34) 
+
+
+
+     
