@@ -662,7 +662,79 @@
          hook that runs every time code commit is successful. This setup eliminates the need for constantly monitoring 
          source code as a post-commit hook will trigger the build whenever any code gets committed in the source code.
 
-  34) 
+  34) What is Input directives? 
+
+     *) With the help of input directives, the user could prompt the inputs with the help of input steps. The stage is paused
+        after different options have been applied and before we can enter to the stage agent to evaluate its condition. Once 
+        the input is approved, we could continue with the stage ahead. The parameters that are given as the part of input
+        submission will be available in the environment for the rest of the stage.
+
+  35) How can you temporarily turn off Jenkins security, if the administartive users have locked themseleves out of admin 
+      console?
+
+      *) The JENKINS_HOME organizer contains a document named config.xml. At the point when security is empowered, this record
+         contains an XML component named useSecurity that will be set to true. By changing this setting to false, security will
+         be handicapped whenever Jenkins is restarted. <useSecurity>false</useSecurity> 
+      *) The incapacitating security ought to dependably be both a final retreat and a brief measure. When any conformation 
+         issues are settled, make certain to re-empower Jenkins security and reboot the CI server.
+      *) Please find the steps below :-
+        1) Go to $JENKINS_HOME in the file system and discover the config.xml document.
+        2) Open this document in the editorial manager.
+        3)Search for the <useSecurity>true</useSecurity> component in this document.
+        4) Supplant true with false
+        5) Expel the components authorization strategy and security realm
+        6) Start Jenkins
+     *) At the point when Jenkins returns, it will be in an unsecured mode where everybody gets full access to the framework.
+        In the event that this is as yet not working, taking a stab at renaming or erasing config.xml.
+
+  36) What is the d/f b/w  Agent and Node? 
+
+      Node:- Node is for scripted pipelines,  In scripted pipelines, the node step can be utilized for executing a script/advance
+              on a particular agent, mark, slave. The node step alternatively takes the operator or name and afterward a 
+              conclusion with code that will be executed on that node.
+      Agent:- Agent is for declarative pipelines, In declarative pipelines, the agent directive is utilized for determining, 
+              which agent /slave the job/task is to be executed on. This mandate just enables you to indicate where the 
+              undertaking is to be executed, which agent, slave, mark or docker image.
+
+  37) Name 3 Steps (or) Stages a typical Jenkins Pipeline must include?
+
+         Jenkins pipeline is configured to build a project by extracting it from source code and then ensure that the build
+         goes through different stages like unit, performance, and user acceptance testing. Once every stage is successful,  
+         it also facilitates deployment to an application server. So overall if we talk about different stages any project
+         goes through can be classified into three broad categories 
+
+      *)  Build :-This stage ensures code extracted from code repository for build purpose and in case of any failure,
+                  developers come to know the reason for build failure. This is a very critical stage in build pipeline 
+                  and subsequent stages will be triggered only when the project exits this stage successfully.
+      *) Test :- This stage ensures the build is unit /performance/user tested so the issue can be caught at an early stage 
+                 only.
+      *) Deploy :- This stage took care of deployment request once testing is successful It is the last stage in the pipeline.
+
+
+   38) name 2 ways that jenkins node can be configured to communicate back to jenkins master?
+
+       1) We can start a Node agent from a browser window itself.
+       2) There is another way of starting an agent from the command line as well.
+    The JNLP file gets downloaded when we start an agent using a browser window. When this file runs it triggers a separate
+    process to launch Jenkins jobs. There is a different process which runs in case of agent get launched from the command
+    line. There is one JAR file which is required on the client machine and this file gets launched from the command line
+    but still, you need to refer slave agent JNLP file available on Jenkin server. The command line triggers a process on 
+    the client machine which actually communicates with Jenkin’s mater and triggers build jobs in Jenkin when it identifies
+    idle clock cycles.
+
+  39) What is Backup-Plugin in jenkins?
+
+    *) Jenkins Backup Plugin is used to take a back up of the configurations and settings so as to use them later on if there
+       is any failure
+    *) in jenkins ui ->click on Manage Jenkins 
+    *) Click on Available section -> search for ThinBackup in the filter section
+    *) We have to fill basic details like backup directory as shown on the below screen and save the settings. The back-up
+       will be stored to the Backup Directory.
+    *)  We can test if a backup is working on not by clicking on Backup Now
+
+   
+
+
 
 
 
