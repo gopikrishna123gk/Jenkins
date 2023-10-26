@@ -276,6 +276,9 @@
    Prometheus, InfluxDB, or other time-series databases to collect Jenkins metrics.
  5) Save the dashboard with a name that reflects its purpose, and ensure it's set as
     the home dashboard if you want it to be the default view when you log in.
+
+
+*) How to setup Slave Node?
  
 
 
